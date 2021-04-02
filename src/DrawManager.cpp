@@ -10,6 +10,23 @@
 #include "Helpers.h"
 
 
+const std::string FILES[] =
+{
+    "big-buck-bunny_trailer.webm",  // 0
+    "elephants-dream.webm",         // 1
+    "out9.webm",                    // 2
+    "small.webm",                   // 3
+    "with_alpha_vp8-1.webm",        // 4
+    "with_alpha_vp8-2.webm",        // 5
+    "with_alpha_vp8-3.webm",        // 6
+    "with_alpha_vp8-4.webm",        // 7
+    "with_alpha_vp8-5.webm",        // 8
+    "with_alpha_vp8-6.webm",        // 9
+    "with_alpha_vp9-1.webm",        // 10
+    "with_alpha_vp9-2.webm",        // 11
+    "with_alpha_vp9-3.webm",        // 12
+};
+
 struct Vertex{
     vec2 pos;
     vec2 texCoord;
@@ -23,7 +40,7 @@ struct Vertex{
 
 ////////////////////////////////////////////////////////////////////////////////
 
-DrawManager::DrawManager():
+DrawManager::DrawManager(int fileId):
     _shaderProgram(0),
     _texture0Location(0),
     _matrixLocation(0),
@@ -32,7 +49,7 @@ DrawManager::DrawManager():
     _vbo(0),
     _texture(0){
 
-    createDecoder();
+    createDecoder(fileId);
     createGLContext();
 }
 
@@ -45,11 +62,11 @@ DrawManager::~DrawManager(){
     glDeleteProgram(_shaderProgram);
 }
 
-void DrawManager::createDecoder(){
+void DrawManager::createDecoder(int fileId){
 #ifdef _WIN32
-    std::string filePath = "res\\big-buck-bunny_trailer.webm";
+    std::string filePath = ".\\WebM_Practice\\res\\" + FILES[fileId];
 #else
-    std::string filePath = "../WebM_Practice/res/big-buck-bunny_trailer.webm";
+    std::string filePath = "res/" + FILES[fileId];
 #endif
     _decoder = make_shared<WebMVideoDecoder>(filePath);
     

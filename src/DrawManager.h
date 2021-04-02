@@ -15,7 +15,7 @@ using namespace glm;
 
 class DrawManager{
 public:
-    DrawManager();
+    DrawManager(int fileId = 0);
     ~DrawManager();
     float getFrameTime();
     vec2 getSize();
@@ -35,7 +35,7 @@ private:
     uint32_t _texture;
 
 private:
-    void createDecoder();
+    void createDecoder(int fileId);
     void createGLContext();
     void setSize(float width, float height);
 };

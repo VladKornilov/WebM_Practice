@@ -117,15 +117,12 @@ void glfwCursorCallback(GLFWwindow* window, double x, double y) {
 }
 
 void glfwScrollCallback(GLFWwindow* window, double scrollByX, double scrollByY) {
-    float size = 0;
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
 
-    size += scrollByY * 0.2;
-    if(size < 0.5){
-        size = 0.5;
-    }
-    if(size > 5.0){
-        size = 5.0;
-    }
+    width += scrollByY * 0.2;
+    height += scrollByY * 0.2;
+    glfwSetWindowSize(window, width, height);
 }
 
 GLFWwindow* createWindow(){
@@ -207,7 +204,11 @@ int main(int argc, char *argv[]) {
     GLFWwindow* window = createWindow();
     
     // графический интерфейс
-    drawManager = new DrawManager();
+    int fileId = 0;
+    if (argc > 1) {
+        fileId = atoi(argv[1]);
+    }
+    drawManager = new DrawManager(fileId);
     
     // получение размера
     vec2 size = drawManager->getSize();
