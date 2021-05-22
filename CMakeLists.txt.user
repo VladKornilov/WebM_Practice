@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.13.2, 2021-04-02T20:58:48. -->
+<!-- Written by QtCreator 4.13.2, 2021-05-22T08:44:34. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -354,7 +354,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">WebM_Player</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.WebM_Player</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">WebM_Player</value>
-    <value type="QString" key="RunConfiguration.Arguments"></value>
+    <value type="QString" key="RunConfiguration.Arguments">1</value>
     <value type="bool" key="RunConfiguration.Arguments.multi">false</value>
     <value type="QString" key="RunConfiguration.OverrideDebuggerStartup"></value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>

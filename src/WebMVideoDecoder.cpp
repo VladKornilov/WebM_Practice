@@ -69,6 +69,7 @@ int64_t decoderTell(void* context) {
 
 
 WebMVideoDecoder::WebMVideoDecoder(const std::string& filePath):
+    _rewindSeconds(0),
     _status(WebMDecodeStatus::FILE_READING),
     _filePath(filePath),
     _nesteg(nullptr),
@@ -86,7 +87,8 @@ WebMVideoDecoder::WebMVideoDecoder(const std::string& filePath):
     _bufferStride(0),
     _decodedBufferSize(0),
     _deltaSumm(0.0f),
-    _isLastFrameDecoded(false){
+    _isLastFrameDecoded(false)
+    {
     
     // загрузка и инициализация
     int bufferInitStatus = loadDataStream();
@@ -246,7 +248,7 @@ int WebMVideoDecoder::initializeWebMContainer(){
                    "duration: %lldnSec, timestampScale: %lldnSec, "
                    "size: %dx%d, "
                    "display size: %dx%d "
-                   "Alpha: %s",
+                   "Alpha: %s\n",
                    i, _videoCodecType, type, static_cast<int>(1.0 / _defaultFrameDurationSec),
                    _videoDuration, _timeStampScale,
                    _nestegVideoParams.width, _nestegVideoParams.height,
@@ -255,12 +257,12 @@ int WebMVideoDecoder::initializeWebMContainer(){
         }
         
         // аудио поток
-        /*if (type == NESTEGG_TRACK_AUDIO) {
+        if (type == NESTEGG_TRACK_AUDIO) {
             nestegg_audio_params params;
-            r = nestegg_track_audio_params(nesteg, i, &params);
+            r = nestegg_track_audio_params(_nesteg, i, &params);
             assert(r == 0);
-            cout << params.rate << " " << params.channels << " channels " << " depth " << params.depth;
-        }*/
+            cout << params.rate << " " << params.channels << " channels " << " depth " << params.depth << endl;
+        }
     }
     
     return 0;
@@ -372,7 +374,7 @@ void WebMVideoDecoder::decodeNewFrame(){
             continue;
         }
         // выход при ошибке
-        if (r <= 0){
+        if (r < 0){
             if(packet){
                 nestegg_free_packet(packet);
             }
@@ -412,14 +414,13 @@ void WebMVideoDecoder::decodeNewFrame(){
                 r = vpx_codec_decode(&_normalCodec, data, data_size, 0, 0);
                 assert(r == VPX_CODEC_OK);
                 
-                
                 // Если есть альфа, то декодим альфу
                 if (_withAlpha) {
                     // чтение альфы
                     // CODE HERE!!!
                     unsigned char * add_data;
                     size_t add_data_size;
-                    r = nestegg_packet_additional_data(packet, _videoCodecId, &add_data, &add_data_size);
+                    r = nestegg_packet_additional_data(packet, 1, &add_data, &add_data_size);
                     assert(r == 0);
 
                     // Выполнение декодирования альфы кадра
@@ -521,12 +522,24 @@ void WebMVideoDecoder::decodeNewFrame(){
             if (curTimeStamp >= end) {
                 _isLastFrameDecoded = true;
             }
+
+            if (_rewindSeconds != 0) {
+                // переход к заданному времени
+                int64_t rewindTimeStamp = curTimeStamp + 1000000000LL * _rewindSeconds;
+                if (rewindTimeStamp < 0) rewindTimeStamp = 0;
+                for (uint i = 0; i < _tracksCount; ++i) {
+                    r = nestegg_track_seek(_nesteg, i, rewindTimeStamp);
+                    int a = 5;
+                }
+                _rewindSeconds = 0;
+            }
             
             // статус
             setStatus(WebMDecodeStatus::DECODED);
         }
     }
 }
+
 
 // сохраняем декодированные данные в текстуру
 void WebMVideoDecoder::copyDataToTexture(uint textureid){

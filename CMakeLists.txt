@@ -290,12 +290,12 @@ if (WIN32)
         COMMAND xcopy ${SOURCE_RES_PATH} ${RESULT_RES_PATH} /y
     )
 else()
-    message("REMOVE COMMAND = rm -f ${CMAKE_BINARY_DIR}/res")
+    message("REMOVE COMMAND = rm -rf ${CMAKE_BINARY_DIR}/res")
     message("LINK COMMAND = ln -s ${CMAKE_SOURCE_DIR}/res ${CMAKE_BINARY_DIR}/res")
     add_custom_command (
         TARGET ${EXECUTABLE_NAME}
         POST_BUILD
-        COMMAND rm -f ${CMAKE_BINARY_DIR}/res/
+        COMMAND rm -rf ${CMAKE_BINARY_DIR}/res
         COMMAND ln -s ${CMAKE_SOURCE_DIR}/res ${CMAKE_BINARY_DIR}/res
     )
 endif()

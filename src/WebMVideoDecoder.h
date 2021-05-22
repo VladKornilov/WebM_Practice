@@ -45,7 +45,10 @@ public:
     float getFrameDuration();
     void copyDataToTexture(uint textureid);
     void decodeNewFrame();          // декодирование
+    void rewindSeconds(int seconds);// перемотка (отриц. число - назад)
     bool isLastFrameDecoded();      // декодировали ли мы только что последний кадр видео?
+
+    int _rewindSeconds;
     
 private:
     // meta
@@ -74,6 +77,7 @@ private:
     size_t _decodedBufferSize;
     float _deltaSumm;
     bool _isLastFrameDecoded;
+
     
 private:
     void setStatus(WebMDecodeStatus newStatus);

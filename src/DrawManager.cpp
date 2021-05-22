@@ -201,3 +201,13 @@ void DrawManager::drawTexture(){
     glUseProgram (0);
 }
 
+void DrawManager::rewindForward()
+{
+    _decoder->_rewindSeconds = 5;
+}
+
+void DrawManager::rewindBackward()
+{
+    _decoder->_rewindSeconds = -5;
+}
+

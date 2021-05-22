@@ -21,6 +21,8 @@ public:
     vec2 getSize();
     void decodeNewFrame();
     void drawTexture();
+    void rewindForward();
+    void rewindBackward();
 
 private:
     // Decoder

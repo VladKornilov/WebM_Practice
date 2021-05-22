@@ -30,6 +30,7 @@ using namespace glm;
 
 
 // Текущие переменные для модели
+bool pausePressed = false;
 bool leftButtonPressed = false;
 bool rightPressed = false;
 double lastCursorPosX = 0.0;
@@ -48,8 +49,19 @@ void glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
-    // по пробелу включаем или выключаем вращение автоматом
+    // по пробелу включаем или выключаем паузу
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
+        pausePressed = !pausePressed;
+        cout << "Pause pressed" << endl;
+    }
+    // по стрелкам перематываем видео
+    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS){
+        drawManager->rewindBackward();
+        cout << "Left pressed" << endl;
+    }
+    if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS){
+        drawManager->rewindForward();
+        cout << "Right pressed" << endl;
     }
 }
 
@@ -168,6 +180,7 @@ GLFWwindow* createWindow(){
     glfwSetCursorPosCallback(window, glfwCursorCallback);
     glfwSetScrollCallback(window, glfwScrollCallback);
     
+
     // инициализация расширений
     glewExperimental = GL_TRUE;
     if(glewInit() != 0){
@@ -240,7 +253,10 @@ int main(int argc, char *argv[]) {
         
         // decode
         double frameDecodeBegin = glfwGetTime();
-        if (drawManager) {
+        if (pausePressed) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        else if (drawManager) {
             drawManager->decodeNewFrame();
         }
         double frameDecodeEnd = glfwGetTime();
